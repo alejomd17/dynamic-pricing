@@ -1,9 +1,9 @@
+
 """
 PLANTILLA PARA USAR TUS DATOS REALES
 ====================================
 Copia este código y reemplaza con tus archivos CSV
 """
-
 import pandas as pd
 from dynamic_pricing_real_data import DynamicPricingModelReal
 

@@ -92,19 +92,70 @@ class GetData:
         # Features derivadas
         df['discount_amount'] = df['TotalAmount'] * (df['DiscountApplied'] / 100)
         
+        # Costos estimados como % del Price
+        df['estimated_cost'] = df.apply(
+                                        lambda row: row['Price'] * 0.6,
+                                        axis=1
+                                    )
+        # # Costos estimados como ajuste histórico por producto
+        # discount_factor = df.groupby('ProductID')['DiscountApplied'].mean() / 200
+        # df['discount_factor'] = df['ProductID'].map(discount_factor)
+        # df['estimated_cost'] = df['estimated_cost'] * (1 + df['discount_factor'].fillna(0))
+        
+        # Columna para costos reales
+        # df['actual_cost'] = df['estimated_cost'].copy()
+        
+        df['estimated_margin_pct'] = ((df['Price'] - df['estimated_cost']) / df['Price']) * 100
+
         # Eliminar las columnas originales que ya no se necesitan
         df = df.drop(columns=['StoreLocation', 'TransactionDate'])
+
+        
+        # Frecuencia de compra del cliente
+        df['customer_purchase_count'] = df.groupby('CustomerID').cumcount() + 1
+        
+        # Ticket promedio del cliente (histórico)
+        customer_avg = df.groupby('CustomerID')['TotalAmount'].expanding().mean().reset_index(level=0, drop=True)
+        df['customer_avg_ticket'] = customer_avg
+        
+        # Cliente nuevo
+        df['is_new_customer'] = (df['customer_purchase_count'] == 1).astype(int)
+        
+        # Días desde última compra (solo para clientes recurrentes)
+        df = df.sort_values(['CustomerID', 'Date'])
+        df['days_since_last_purchase'] = df.groupby('CustomerID')['Date'].diff().dt.days
+        df['days_since_last_purchase'] = df['days_since_last_purchase'].fillna(0)
+        
+        # Lifetime value del cliente hasta la fecha
+        df['customer_ltv'] = df.groupby('CustomerID')['TotalAmount'].cumsum()
+        
+          # Ticket promedio por producto
+        df['product_avg_ticket'] = df.groupby('ProductID')['TotalAmount'].transform('mean')
+        
+        # Desviación del ticket normal del producto
+        df['ticket_deviation'] = (df['TotalAmount'] - df['product_avg_ticket']) / (df['product_avg_ticket'] + 1)
+        
+        # Precio vs promedio de categoría
+        df['category_avg_price'] = df.groupby('category_encoded')['Price'].transform('mean')
+        df['price_vs_category'] = df['Price'] / (df['category_avg_price'] + 1)
+        
+        # Revenue y profit calculados
+        df['revenue'] = df['Price'] * df['demand']
+        df['estimated_profit'] = (df['Price'] - df['estimated_cost']) * df['demand']
+        
+        df.rename(columns={'Quantity': 'demand'}, inplace=True)
+
         # Registrar features básicas disponibles
         self.available_features = {
-            'price', 'day_of_week', 'hour', 'is_weekend', 'month', 
-            'quarter', 'has_discount', 'discount_level', 'category_encoded',
-            'store_encoded', 'payment_encoded'
+            'Price', 'day_of_week', 'hour', 'is_weekend', 'month', 
+            'quarter', 'has_discount', 'discount_level', 'DiscountApplied', 'category_encoded',
+            'store_encoded', 'payment_encoded', 'customer_purchase_count',
+            'customer_avg_ticket', 'is_new_customer', 'days_since_last_purchase',
+            'customer_ltv', 'product_avg_ticket', 'ticket_deviation', 'price_vs_category',
         }
         
         print(f"Transacciones cargadas: {len(df):,}")
         print(f"Periodo: {df['Date'].min()} a {df['Date'].max()}")
-        print(f"Productos únicos: {df['ProductID'].nunique()}")
-        print(f"Categorías: {df['ProductCategory'].nunique()}")
         
         self.df_transacciones = df.copy() 
         self.df = df.copy()
