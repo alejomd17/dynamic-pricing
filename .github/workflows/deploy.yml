@@ -33,5 +33,8 @@ jobs:
           tags: ${{ env.IMAGE }}:latest
 
       - name: Trigger Render deploy
-        if: ${{ secrets.RENDER_DEPLOY_HOOK != '' }}
-        run: curl -s "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        continue-on-error: true
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then curl -s "$HOOK"; fi
