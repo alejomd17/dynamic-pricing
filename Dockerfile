@@ -41,6 +41,9 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY backend /app/backend
 
+# Generar sesión inicial con los modelos entrenados (se guarda en la imagen)
+RUN cd /app/backend && python scripts/create_session.py
+
 COPY --from=frontend-builder /app/frontend/public /app/frontend/public
 COPY --from=frontend-builder /app/frontend/.next/standalone /app/frontend
 COPY --from=frontend-builder /app/frontend/.next/static /app/frontend/.next/static
@@ -48,8 +51,6 @@ COPY --from=frontend-builder /app/frontend/.next/static /app/frontend/.next/stat
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
-
-RUN mkdir -p /app/backend/data/sessions
 
 EXPOSE 80
 

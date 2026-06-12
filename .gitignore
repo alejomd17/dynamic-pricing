@@ -7,11 +7,8 @@ backend/.venv/
 backend/.env
 frontend/.env.local
 
-# Datos (CSV grandes y caché procesada)
-backend/data/*.csv
+# Caché procesada y sesiones (se generan en el build)
 backend/data/processed/
-
-# Sesiones de usuario (generadas en runtime)
 backend/data/sessions/
 
 # Python
