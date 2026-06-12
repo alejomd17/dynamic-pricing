@@ -1,0 +1,14 @@
+services:
+  pricing-monolith:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dynamic-pricing-monolith:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend/data:/app/backend/data
+    environment:
+      - CORS_ORIGINS=http://localhost:8080
+      - SESSION_ID=${SESSION_ID:-}
+    restart: unless-stopped

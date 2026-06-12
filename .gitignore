@@ -1,0 +1,34 @@
+# Entornos virtuales
+.venv_dp/
+.venv_dp
+backend/.venv/
+
+# Variables de entorno (contienen secretos)
+backend/.env
+frontend/.env.local
+
+# Datos (CSV grandes y caché procesada)
+backend/data/*.csv
+backend/data/processed/
+
+# Sesiones de usuario (generadas en runtime)
+backend/data/sessions/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+
+# Node.js
+node_modules/
+frontend/.next/
+frontend/tsconfig.tsbuildinfo
+
+# Docker
+*.log
+
+# ZIP original (ya extraído)
+dynamic_pricing_codigo.zip
