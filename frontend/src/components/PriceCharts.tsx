@@ -181,8 +181,9 @@ export default function PriceCharts({
               />
               <YAxis
                 tick={{ fontSize: 11, fill: "#64748b" }}
-                tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
-                width={52}
+                tickFormatter={(v) => v >= 1_000_000 ? `${(v/1_000_000).toFixed(1)}M` : v >= 1_000 ? `${(v/1_000).toFixed(1)}K` : String(Math.round(v))}
+                domain={["auto", "auto"]}
+                width={60}
               />
               <Tooltip
                 formatter={(v: number) => [formatCurrency(v), "Ingreso"]}
@@ -223,8 +224,9 @@ export default function PriceCharts({
               />
               <YAxis
                 tick={{ fontSize: 11, fill: "#64748b" }}
-                tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
-                width={52}
+                tickFormatter={(v) => v >= 1_000_000 ? `${(v/1_000_000).toFixed(1)}M` : v >= 1_000 ? `${(v/1_000).toFixed(1)}K` : String(Math.round(v))}
+                domain={["auto", "auto"]}
+                width={60}
               />
               <Tooltip
                 formatter={(v: number) => [formatCurrency(v), "Rentabilidad"]}

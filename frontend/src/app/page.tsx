@@ -338,13 +338,21 @@ function DashboardContent() {
     <div className="min-h-screen bg-white">
       <header className="border-b border-slate-100 bg-white sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div>
-            <h1 className="text-2xl font-bold" style={{ color: "#00285d" }}>
-              Optimización Inteligente de Precios
-            </h1>
-            <p className="text-sm text-slate-400 mt-0.5">
-              Optimización de precios y análisis de elasticidad en tiempo real
-            </p>
+          <div className="flex items-start justify-between flex-wrap gap-3">
+            <div>
+              <h1 className="text-2xl font-bold" style={{ color: "#00285d" }}>
+                Optimización Inteligente de Precios
+              </h1>
+              <p className="text-sm text-slate-400 mt-0.5">
+                Optimización de precios y análisis de elasticidad en tiempo real
+              </p>
+            </div>
+            {sessionMeta?.date_range && (
+              <div className="text-right text-xs text-slate-400 self-center">
+                <span className="font-medium text-slate-500">Período de datos: </span>
+                {sessionMeta.date_range.start.slice(0, 10)} — {sessionMeta.date_range.end.slice(0, 10)}
+              </div>
+            )}
           </div>
         </div>
       </header>
