@@ -20,7 +20,7 @@ RUN npm ci
 
 COPY frontend/ .
 
-ARG NEXT_PUBLIC_API_URL=/api
+ARG NEXT_PUBLIC_API_URL=/dynamic_pricing/api
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 RUN npm run build
